@@ -7,6 +7,7 @@ const accountId = args[0]
 const bucketName = args[1]
 const region = args[2] || 'us-east-1'
 const availableRegions = ['us-east-1', 'us-west-2', 'eu-west-1', 'eu-central-1', 'ap-northeast-1', 'ap-northeast-2', 'ap-southeast-1', 'ap-southeast-2']
+const cloudFormationStackName = args[3]
 
 if (!accountId || accountId.length !== 12) {
     console.error('You must supply a 12 digit account id as the first argument')
@@ -20,6 +21,11 @@ if (!bucketName) {
 
 if (availableRegions.indexOf(region) === -1) {
     console.error(`Amazon API Gateway and Lambda are not available in the ${region} region. Available regions: us-east-1, us-west-2, eu-west-1, eu-central-1, ap-northeast-1, ap-northeast-2, ap-southeast-1, ap-southeast-2`)
+    return
+}
+
+if (!cloudFormationStackName) {
+    console.error('You must supply a cloud formation name as the 3rd argument')
     return
 }
 
@@ -42,6 +48,7 @@ function modifyPackageFile() {
     const packageJsonModified = packageJson
         .replace(/YOUR_UNIQUE_BUCKET_NAME/g, bucketName)
         .replace(/YOUR_AWS_REGION/g, region)
+        .replace(/YOUR_CLOUD_FORMATION_STACK_NAME/g, cloudFormationStackName)
 
     fs.writeFileSync(packageJsonPath, packageJsonModified, 'utf8')
 }
