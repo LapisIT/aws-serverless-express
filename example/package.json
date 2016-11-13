@@ -6,7 +6,9 @@
   "config": {
     "s3BucketName": "YOUR_UNIQUE_BUCKET_NAME",
     "cloudFormationStackName": "YOUR_CLOUD_FORMATION_STACK_NAME",
-    "region": "YOUR_AWS_REGION"
+    "region": "YOUR_AWS_REGION",
+    "lambdaFunctionName": "YOUR_LAMBDA_FUNCTION"
+
   },
   "scripts": {
     "config": "node configure.js",
