@@ -4,6 +4,8 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 const app = express()
+const log = require('loglevel')
+log.setLevel(log.levels.INFO)
 
 app.use(cors())
 app.use(bodyParser.json())
@@ -68,7 +70,11 @@ let userIdCounter = users.length
 
 // The aws-serverless-express library creates a server and listens on a Unix
 // Domain Socket for you, so you can remove the usual call to app.listen.
-// app.listen(3000)
+if (process.env.RUN_LOCAL_PORT) {
+    const port = Number(process.env.RUN_LOCAL_PORT);
+    log.info('Running app locally using port: %s, http://localhost:%s/', port, port);
+    app.listen(port);
+}
 
 // Export your express server so you can import it in the lambda function.
 module.exports = app

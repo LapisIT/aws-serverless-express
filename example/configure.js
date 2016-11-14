@@ -43,7 +43,7 @@ if (!apiGateway) {
     return
 }
 
-if (!apiGateway) {
+if (!npmPackageName) {
     console.error('You must supply a NPM package name as the 6th argument')
     return
 }

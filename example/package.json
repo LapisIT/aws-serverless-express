@@ -12,6 +12,10 @@
 
   },
   "scripts": {
+    "test": "mocha --watch --recursive **/**/*.spec.js",
+    "start": "RUN_LOCAL_PORT=3000 node app.js",
+    "debug": "RUN_LOCAL_PORT=3000 node-debug app.js",
+    "deploy": "npm run package-upload-update-function",
     "config": "node configure.js",
     "local": "node -e \"require('./lambda.js').handler(require('./api-gateway-event.json'), {succeed: v => { console.log(v); process.exit(0); }}, (e, v) => { console.log(v); process.exit(1); })\"",
     "invoke-lambda": "aws lambda invoke --function-name YOUR_LAMBDA_FUNCTION --region $npm_package_config_region --payload file://api-gateway-event.json lambda-invoke-response.json && cat lambda-invoke-response.json",
@@ -29,6 +33,9 @@
     "package-upload-update-function": "npm run package-upload-function && npm run update-function",
     "setup": "npm install && (aws s3api get-bucket-location --bucket $npm_package_config_s3BucketName --region $npm_package_config_region || npm run create-bucket) && npm run package-upload-function && npm run upload-api-gateway-swagger && npm run create-stack",
 
+    "win-start": "set RUN_LOCAL_PORT=3000 && node app.js",
+    "win-debug": "set RUN_LOCAL_PORT=3000 && node-debug app.js",
+    "win-deploy": "npm run win-package-upload-update-function",
     "win-config": "node configure.js",
     "win-local": "node -e \"require('./lambda.js').handler(require('./api-gateway-event.json'), {succeed: v => { console.log(v); process.exit(0); }}, (e, v) => { console.log(v); process.exit(1); })\"",
     "win-invoke-lambda": "aws lambda invoke --function-name YOUR_LAMBDA_FUNCTION --region %npm_package_config_region% --payload file://api-gateway-event.json lambda-invoke-response.json && cat lambda-invoke-response.json",
@@ -47,10 +54,16 @@
     "win-setup": "npm install && (aws s3api get-bucket-location --bucket %npm_package_config_s3BucketName% --region %npm_package_config_region% || npm run win-create-bucket) && npm run win-package-upload-function && npm run win-upload-api-gateway-swagger && npm run win-create-stack"
   },
   "license": "Apache-2.0",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "supertest": "^2.0.1"
+  },
   "dependencies": {
     "aws-serverless-express": "^1.1.0",
     "body-parser": "^1.15.2",
     "cors": "^2.8.1",
-    "express": "^4.14.0"
+    "express": "^4.14.0",
+    "express-validator": "^2.21.0",
+    "loglevel": "^1.4.1"
   }
 }
