@@ -1,5 +1,5 @@
 {
-  "name": "aws-serverless-express-example",
+  "name": "YOUR_NPM_PACKAGE_NAME",
   "version": "1.1.0",
   "description": "Example application for running a Node Express app on AWS Lambda using Amazon API Gateway.",
   "main": "lambda.js",

@@ -3,13 +3,15 @@
 const fs = require('fs')
 const exec = require('child_process').exec
 const args = process.argv.slice(2)
-const accountId = args[0]
-const bucketName = args[1]
-const region = args[2] || 'us-east-1'
+let i = 0
+const accountId = args[i++]
+const bucketName = args[i++]
+const region = args[i++]
 const availableRegions = ['us-east-1', 'us-west-2', 'eu-west-1', 'eu-central-1', 'ap-northeast-1', 'ap-northeast-2', 'ap-southeast-1', 'ap-southeast-2']
-const cloudFormationStackName = args[3]
-const lambdaFunction = args[4]
-const apiGateway = args[5]
+const cloudFormationStackName = args[i++]
+const lambdaFunction = args[i++]
+const apiGateway = args[i++]
+const npmPackageName = args[i++]
 
 if (!accountId || accountId.length !== 12) {
     console.error('You must supply a 12 digit account id as the first argument')
@@ -38,6 +40,11 @@ if (!lambdaFunction) {
 
 if (!apiGateway) {
     console.error('You must supply a API Gateway name as the 5th argument')
+    return
+}
+
+if (!apiGateway) {
+    console.error('You must supply a NPM package name as the 6th argument')
     return
 }
 
@@ -75,6 +82,7 @@ function modifyPackageFile() {
         .replace(/YOUR_CLOUD_FORMATION_STACK_NAME/g, cloudFormationStackName)
         .replace(/YOUR_LAMBDA_FUNCTION/g, lambdaFunction)
         .replace(/YOUR_API_GATEWAY/g, apiGateway)
+        .replace(/YOUR_NPM_PACKAGE_NAME/g, npmPackageName)
 
     fs.writeFileSync(packageJsonPath, packageJsonModified, 'utf8')
 }
