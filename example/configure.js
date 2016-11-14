@@ -9,6 +9,7 @@ const region = args[2] || 'us-east-1'
 const availableRegions = ['us-east-1', 'us-west-2', 'eu-west-1', 'eu-central-1', 'ap-northeast-1', 'ap-northeast-2', 'ap-southeast-1', 'ap-southeast-2']
 const cloudFormationStackName = args[3]
 const lambdaFunction = args[4]
+const apiGateway = args[5]
 
 if (!accountId || accountId.length !== 12) {
     console.error('You must supply a 12 digit account id as the first argument')
