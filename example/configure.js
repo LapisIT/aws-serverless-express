@@ -31,7 +31,12 @@ if (!cloudFormationStackName) {
 }
 
 if (!lambdaFunction) {
-    console.error('You must supply a lambda function name as the 3rd argument')
+    console.error('You must supply a lambda function name as the 4th argument')
+    return
+}
+
+if (!apiGateway) {
+    console.error('You must supply a API Gateway name as the 5th argument')
     return
 }
 
@@ -55,6 +60,7 @@ function modifySimpleProxyFile() {
         .replace(/YOUR_ACCOUNT_ID/g, accountId)
         .replace(/YOUR_AWS_REGION/g, region)
         .replace(/YOUR_LAMBDA_FUNCTION/g, lambdaFunction)
+        .replace(/YOUR_API_GATEWAY/g, apiGateway)
 
     fs.writeFileSync(simpleProxyApiPath, simpleProxyApiModified, 'utf8')
 }
@@ -67,6 +73,7 @@ function modifyPackageFile() {
         .replace(/YOUR_AWS_REGION/g, region)
         .replace(/YOUR_CLOUD_FORMATION_STACK_NAME/g, cloudFormationStackName)
         .replace(/YOUR_LAMBDA_FUNCTION/g, lambdaFunction)
+        .replace(/YOUR_API_GATEWAY/g, apiGateway)
 
     fs.writeFileSync(packageJsonPath, packageJsonModified, 'utf8')
 }
