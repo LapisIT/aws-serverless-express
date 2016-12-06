@@ -8,8 +8,8 @@
     "cloudFormationStackName": "YOUR_CLOUD_FORMATION_STACK_NAME",
     "region": "YOUR_AWS_REGION",
     "lambdaFunctionName": "YOUR_LAMBDA_FUNCTION",
-    "apiGateway":"YOUR_API_GATEWAY"
-
+    "apiGateway":"YOUR_API_GATEWAY",
+    "packageContent":"lambda.js app.js index.html node_modules "
   },
   "scripts": {
     "test": "mocha --watch --recursive **/**/*.spec.js",
@@ -25,7 +25,7 @@
     "create-stack": "aws cloudformation create-stack --stack-name $npm_package_config_cloudFormationStackName --template-body file://./cloudformation.json --capabilities CAPABILITY_IAM --parameters ParameterKey=AwsServerlessExpressS3Bucket,ParameterValue=$npm_package_config_s3BucketName --region $npm_package_config_region",
     "update-stack": "aws cloudformation update-stack --stack-name $npm_package_config_cloudFormationStackName --template-body file://./cloudformation.json --capabilities CAPABILITY_IAM --parameters ParameterKey=AwsServerlessExpressS3Bucket,ParameterValue=$npm_package_config_s3BucketName --region $npm_package_config_region",
     "delete-stack": "aws cloudformation delete-stack --stack-name $npm_package_config_cloudFormationStackName --region $npm_package_config_region",
-    "package-function": "zip -q -r lambda-function.zip lambda.js app.js index.html node_modules",
+    "package-function": "zip -q -r lambda-function.zip $npm_package_config_packageContent",
     "upload-function": "aws s3 cp ./lambda-function.zip s3://$npm_package_config_s3BucketName --region $npm_package_config_region",
     "update-function": "aws lambda update-function-code --function-name YOUR_LAMBDA_FUNCTION --region $npm_package_config_region --zip-file fileb://lambda-function.zip",
     "package-upload-function": "npm run package-function && npm run upload-function",
@@ -45,7 +45,7 @@
     "win-create-stack": "aws cloudformation create-stack --stack-name %npm_package_config_cloudFormationStackName% --template-body file://./cloudformation.json --capabilities CAPABILITY_IAM --parameters ParameterKey=AwsServerlessExpressS3Bucket,ParameterValue=%npm_package_config_s3BucketName% --region %npm_package_config_region%",
     "win-update-stack": "aws cloudformation update-stack --stack-name %npm_package_config_cloudFormationStackName% --template-body file://./cloudformation.json --capabilities CAPABILITY_IAM --parameters ParameterKey=AwsServerlessExpressS3Bucket,ParameterValue=%npm_package_config_s3BucketName% --region %npm_package_config_region%",
     "win-delete-stack": "aws cloudformation delete-stack --stack-name %npm_package_config_cloudFormationStackName% --region %npm_package_config_region%",
-    "win-package-function": "7z a lambda-function.zip -r lambda.js app.js index.html node_modules",
+    "win-package-function": "7z a lambda-function.zip -r  $npm_package_config_packageContent",
     "win-upload-function": "aws s3 cp ./lambda-function.zip s3://%npm_package_config_s3BucketName% --region %npm_package_config_region%",
     "win-update-function": "aws lambda update-function-code --function-name YOUR_LAMBDA_FUNCTION --region %npm_package_config_region% --zip-file fileb://lambda-function.zip",
     "win-package-upload-function": "npm run win-package-function && npm run win-upload-function",
