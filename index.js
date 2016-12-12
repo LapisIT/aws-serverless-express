@@ -26,9 +26,11 @@ function getPathWithQueryStringParams(event) {
 }
 
 function mapApiGatewayEventToHttpRequest(event, context, socketPath) {
-    const headers = event.headers || {}
+    const headers = event.headers || {} // NOTE: Mutating event.headers; prefer deep clone of event.headers
+    const eventWithoutBody = Object.assign({}, event)
+    delete eventWithoutBody.body
 
-    headers['x-apigateway-event'] = JSON.stringify(event)
+    headers['x-apigateway-event'] = JSON.stringify(eventWithoutBody)
     headers['x-apigateway-context'] = JSON.stringify(context)
 
     return {
@@ -144,4 +146,15 @@ exports.proxy = (server, event, context) => {
     } catch (error) {
         forwardLibraryErrorResponseToApiGateway(server, error, context)
     }
+}
+
+if (process.env.NODE_ENV === 'test') {
+    exports.getPathWithQueryStringParams = getPathWithQueryStringParams
+    exports.mapApiGatewayEventToHttpRequest = mapApiGatewayEventToHttpRequest
+    exports.forwardResponseToApiGateway = forwardResponseToApiGateway
+    exports.forwardConnectionErrorResponseToApiGateway = forwardConnectionErrorResponseToApiGateway
+    exports.forwardLibraryErrorResponseToApiGateway = forwardLibraryErrorResponseToApiGateway
+    exports.forwardRequestToNodeServer = forwardRequestToNodeServer
+    exports.startServer = startServer
+    exports.getSocketPath = getSocketPath
 }

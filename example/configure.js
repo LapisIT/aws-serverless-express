@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 'use strict'
 const fs = require('fs')
-const exec = require('child_process').exec
 const args = process.argv.slice(2)
 let i = 0
 const accountId = args[i++]
