@@ -13,16 +13,18 @@ if (!fs.existsSync('./node_modules/minimist')) {
 }
 
 const args = require('minimist')(process.argv.slice(2), {
-  string: [
-    'account-id',
-    'bucket-name',
-    'function-name',
-    'region'
-  ],
-  default: {
-    region: 'us-east-1',
-    'function-name': 'AwsServerlessExpressFunction'
-  }
+    string: [
+        'account-id',
+        'bucket-name',
+        'function-name',
+        'region',
+        'stack-name',
+        'api-name'
+    ],
+    default: {
+        region: 'ap-southeast-2',
+        'function-name': 'AwsServerlessExpressFunction'
+    }
 })
 
 if (minimistHasBeenInstalled) {
@@ -32,6 +34,8 @@ if (minimistHasBeenInstalled) {
 const accountId = args['account-id']
 const bucketName = args['bucket-name']
 const functionName = args['function-name']
+const stackName = args['stack-name']
+const apiName = args['api-name']
 const region = args.region
 
 if (!accountId || accountId.length !== 12) {
@@ -41,6 +45,16 @@ if (!accountId || accountId.length !== 12) {
 
 if (!bucketName) {
   console.error('You must supply a bucket name as --bucket-name="<bucketName>"')
+  process.exit(1)
+}
+
+if (!stackName) {
+  console.error('You must supply a stack name as --stack-name="<stackName>"')
+  process.exit(1)
+}
+
+if (!apiName) {
+  console.error('You must supply a api name as --api-name="<apiName>"')
   process.exit(1)
 }
 
@@ -56,4 +70,10 @@ modifyFiles(['./simple-proxy-api.yaml', './package.json', './cloudformation.yaml
 }, {
   regexp: /YOUR_SERVERLESS_EXPRESS_LAMBDA_FUNCTION_NAME/g,
   replacement: functionName
+}, {
+  regexp: /YOUR_SERVERLESS_EXPRESS_STACK_NAME/g,
+  replacement: stackName
+}, {
+  regexp: /YOUR_SERVERLESS_EXPRESS_API_NAME/g,
+  replacement: apiName
 }])
