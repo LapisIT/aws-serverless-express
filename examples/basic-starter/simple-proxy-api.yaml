@@ -1,7 +1,7 @@
 ---
 swagger: 2.0
 info:
-  title: AwsServerlessExpressApi
+  title: YOUR_SERVERLESS_EXPRESS_API_NAME
 basePath: /prod
 schemes:
 - https
@@ -41,14 +41,13 @@ paths:
             Access-Control-Allow-Headers:
               type: string
       x-amazon-apigateway-integration:
-        contentHandling: CONVERT_TO_TEXT
         responses:
           default:
             statusCode: 200
             responseParameters:
               method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
               method.response.header.Access-Control-Allow-Headers: "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'"
-              method.response.header.Access-Control-Allow-Origin: "'https://example.com'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
         passthroughBehavior: when_no_match
         requestTemplates:
           application/json: "{\"statusCode\": 200}"
@@ -67,6 +66,7 @@ paths:
         uri: arn:aws:apigateway:YOUR_AWS_REGION:lambda:path/2015-03-31/functions/arn:aws:lambda:YOUR_AWS_REGION:YOUR_ACCOUNT_ID:function:${stageVariables.ServerlessExpressLambdaFunctionName}/invocations
         httpMethod: POST
         type: aws_proxy
+        contentHandling: CONVERT_TO_TEXT
     options:
       consumes:
       - application/json
@@ -90,12 +90,13 @@ paths:
             statusCode: 200
             responseParameters:
               method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
-              method.response.header.Access-Control-Allow-Headers: "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'"
-              method.response.header.Access-Control-Allow-Origin: "'https://example.com'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,Content-Encoding,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
         passthroughBehavior: when_no_match
         requestTemplates:
           application/json: "{\"statusCode\": 200}"
         type: mock
+        contentHandling: CONVERT_TO_TEXT
 x-amazon-apigateway-binary-media-types:
   - '*/*'
 definitions:
