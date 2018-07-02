@@ -2,7 +2,7 @@
 swagger: 2.0
 info:
   title: YOUR_SERVERLESS_EXPRESS_API_NAME
-basePath: /prod
+basePath: /dev
 schemes:
 - https
 paths:
