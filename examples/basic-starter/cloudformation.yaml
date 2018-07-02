@@ -95,7 +95,7 @@ Outputs:
         - !Ref AWS::Region
         - "#/apis/"
         - !Ref ApiGatewayApi
-        - "/stages/prod"
+        - "/stages/dev"
 
   ApiUrl:
     Description: Invoke URL for your API. Clicking this link will perform a GET request
@@ -106,4 +106,4 @@ Outputs:
         - !Ref ApiGatewayApi
         - ".execute-api."
         - !Ref AWS::Region
-        - ".amazonaws.com/prod/"
+        - ".amazonaws.com/dev/"
