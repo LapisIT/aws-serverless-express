@@ -27,13 +27,13 @@ express/examples/basic-starter/package.json
 # Create a customised example
 ```bash
 cd example
-
+npm i
 npm run config -- --account-id="437737057749" \
 --bucket-name="artifacts.spatialvision.com.au" \
 --region="ap-southeast-2" \
---function-name="ServerlessExpressTestHXG" \
---stack-name="ServerlessExpressStack302" \
---api-name="ServerlessExpressApiHXG"
+--function-name="ServerlessExpressTestHXGJul18" \
+--stack-name="ServerlessExpressStack320Jul18" \
+--api-name="ServerlessExpressApiHXGJul18"
 
 npm run setup
 
