@@ -1,2 +1,10 @@
+node_modules/
 lambda-invoke-response.json
 packaged-sam.yaml
+**/.env
+**/envs.json
+lib
+npm-debug.log
+lambda-function.zip
+.idea/
+.tscmultiwatch
