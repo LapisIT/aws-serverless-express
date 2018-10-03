@@ -9,6 +9,7 @@ HEAD:examples/basic-starter | tar xf -
 ```bash
 nvm use
 npm i
+npm run ts-clear
 
 # Make sure to replace:
 # --function-name="YourProjectApiDev" \
@@ -27,6 +28,14 @@ npm run setup
 https://console.aws.amazon.com/cloudformation/home
 ```
 
+# Rename package.json for project
+```bash
+  "name": "aws-serverless-express-example",
+  "version": "2.1.1",
+  "description": "Example application for running a Node Express app on AWS Lambda using Amazon API Gateway.",
+  
+```
+
 # Locally test, modify API and deploy
 ```bash
 npm run local
@@ -34,4 +43,12 @@ npm run local
 npm start
 
 npm run package-deploy
+```
+
+# build, updload and deploy scripts
+
+Update the prefix in deploy-commons.sh
+
+```bash
+export S3_API_KEY_PREFIX='your-projects/api'
 ```
