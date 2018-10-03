@@ -24,27 +24,14 @@ express/examples/basic-starter/simple-proxy-api.yaml
 express/examples/basic-starter/package.json
 ```
 
-# Create a customised example
+# Create a project based on the example
+
+* Create your new project Dev/new-project in svgitlab
+* Clone & cd
+* Run the following command
+* Read the README.md
+
 ```bash
-cd example/basic-starter
-npm i
-npm run config -- --account-id="437737057749" \
---bucket-name="artifacts.spatialvision.com.au" \
---region="ap-southeast-2" \
---function-name="ServerlessExpressTestHXGJul18" \
---stack-name="ServerlessExpressStack320Jul18" \
---api-name="ServerlessExpressApiHXGJul18"
-
-npm run setup
-
-https://console.aws.amazon.com/cloudformation/home
-```
-
-# Locally test, modify API and deploy
-```bash
-npm run local
-
-npm start
-
-npm run package-deploy
+git archive --remote=git@svgitlab.spatialvision.com.au:aws/aws-serverless-express-320-Jul2018.git \
+HEAD:examples/basic-starter | tar xf -
 ```
