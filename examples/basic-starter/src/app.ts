@@ -20,7 +20,7 @@ import {errorHandler} from './app-error-handler';
 
 export const app = express();
 
-app.set('port', process.env.ADMIN_API_PORT || 3001);
+app.set('port', process.env.API_PORT || 3000);
 app.use(nocache());
 app.use(cors({allowedHeaders: ['Content-Type', 'Authorization', 'Content-Encoding']}));
 app.use(bodyParser.json());
@@ -33,5 +33,3 @@ app.use('/', index);
 
 // error handler middleware must be added at the end
 app.use(errorHandler);
-
-export default app;
