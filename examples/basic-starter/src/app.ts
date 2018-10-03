@@ -33,3 +33,5 @@ app.use('/', index);
 
 // error handler middleware must be added at the end
 app.use(errorHandler);
+
+export default app;

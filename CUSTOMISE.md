@@ -29,7 +29,7 @@ express/examples/basic-starter/package.json
 cd examples/basic-starter/
 
 curl -vL https://api.github.com/repos/SpatialVision/express-ts-template/tarball/develop | \
-tar xfz - && DIR=`ls |grep SpatialVision` && rm -fr src && mv $DIR/src .; mv $DIR/package.json ./package-express-ts.json; rm -fr $DIR
+tar xfz - && DIR=`ls |grep SpatialVision` && cp -R $DIR/src .; mv $DIR/package.json ./package-express-ts.json; rm -fr $DIR
 
 # Now manually run diff on packagel.json and package-express-ts.json and ensure you get dependencies and devDependencies updated
 ```
