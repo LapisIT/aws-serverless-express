@@ -24,6 +24,16 @@ express/examples/basic-starter/simple-proxy-api.yaml
 express/examples/basic-starter/package.json
 ```
 
+# Update the express src from express-ts
+```bash
+cd examples/basic-starter/
+
+curl -vL https://api.github.com/repos/SpatialVision/express-ts-template/tarball/develop | \
+tar xfz - && DIR=`ls |grep SpatialVision` && rm -fr src && mv $DIR/src .; mv $DIR/package.json ./package-express-ts.json; rm -fr $DIR
+
+# Now manually run diff on packagel.json and package-express-ts.json and ensure you get dependencies and devDependencies updated
+```
+
 # Create a project based on the example
 
 * Create your new project Dev/new-project in svgitlab
