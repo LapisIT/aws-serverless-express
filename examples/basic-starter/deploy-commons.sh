@@ -1,6 +1,6 @@
 #!/bin/bash
 export S3_BUCKET_ARTIFACTS='artifacts.spatialvision.com.au'
-export S3_API_KEY_PREFIX='ten/api'
+export S3_API_KEY_PREFIX='your-project/api'
 export LAMBDA_FUNCTION_ZIP=lambda-function.zip
 export AWS_PROFILE='default'
 export AWS_REGION='ap-southeast-2'
