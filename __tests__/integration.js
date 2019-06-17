@@ -1,12 +1,12 @@
 const path = require('path')
 const fs = require('fs')
-const awsServerlessExpress = require('../src/index')
+const awsServerlessExpress = require('../index')
 const apiGatewayEvent = require('../examples/basic-starter/api-gateway-event.json')
 const app = require('../examples/basic-starter/app')
 
 const server = awsServerlessExpress.createServer(app)
 const lambdaFunction = {
-  handler: (event, context) => awsServerlessExpress.proxy(server, event, context)
+  handler: (event, context, resolutionMode, callback, _server) => awsServerlessExpress.proxy(_server || server, event, context, resolutionMode, callback)
 }
 
 function clone (json) {
@@ -50,6 +50,20 @@ function makeResponse (response) {
 }
 
 describe('integration tests', () => {
+  test('proxy returns server', (done) => {
+    const succeed = () => {
+      done()
+    }
+
+    const server = lambdaFunction.handler(makeEvent({
+      path: '/',
+      httpMethod: 'GET'
+    }), {
+      succeed
+    })
+    expect(server._socketPathSuffix).toBeTruthy()
+  })
+
   test('GET HTML (initial request)', (done) => {
     const succeed = response => {
       delete response.headers.date
@@ -147,6 +161,64 @@ describe('integration tests', () => {
     }), {
       succeed
     })
+  })
+
+  test('GET JSON single (resolutionMode = CALLBACK)', (done) => {
+    const callback = (e, response) => {
+      delete response.headers.date
+      expect(response).toEqual(makeResponse({
+        'body': '{"id":1,"name":"Joe"}',
+        'headers': {
+          'content-length': '21',
+          'etag': 'W/"15-rRboW+j/yFKqYqV6yklp53+fANQ"'
+        }
+      }))
+      done()
+    }
+    lambdaFunction.handler(makeEvent({
+      path: '/users/1',
+      httpMethod: 'GET'
+    }), {}, 'CALLBACK', callback)
+  })
+
+  test('GET JSON single (resolutionMode = PROMISE)', (done) => {
+    const succeed = response => {
+      delete response.headers.date
+      expect(response).toEqual(makeResponse({
+        'body': '{"id":1,"name":"Joe"}',
+        'headers': {
+          'content-length': '21',
+          'etag': 'W/"15-rRboW+j/yFKqYqV6yklp53+fANQ"'
+        }
+      }))
+      done()
+    }
+    lambdaFunction.handler(makeEvent({
+      path: '/users/1',
+      httpMethod: 'GET'
+    }), {}, 'PROMISE')
+      .promise.then(succeed)
+  })
+
+  test('GET JSON single (resolutionMode = PROMISE; new server)', (done) => {
+    const succeed = response => {
+      delete response.headers.date
+      expect(response).toEqual(makeResponse({
+        'body': '{"id":1,"name":"Joe"}',
+        'headers': {
+          'content-length': '21',
+          'etag': 'W/"15-rRboW+j/yFKqYqV6yklp53+fANQ"'
+        }
+      }))
+      newServer.close()
+      done()
+    }
+    const newServer = awsServerlessExpress.createServer(app)
+    lambdaFunction.handler(makeEvent({
+      path: '/users/1',
+      httpMethod: 'GET'
+    }), {}, 'PROMISE', null, newServer)
+      .promise.then(succeed)
   })
 
   test('GET JSON single 404', (done) => {
@@ -379,7 +451,7 @@ describe('integration tests', () => {
     })
   })
 
-  test.skip('set-cookie')
+  test.todo('set-cookie')
 
   test('server.onClose', (done) => {
     // NOTE: this must remain as the final test as it closes `server`

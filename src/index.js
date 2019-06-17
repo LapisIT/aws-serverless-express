@@ -21,6 +21,13 @@ const isType = require('type-is')
 function getPathWithQueryStringParams (event) {
   return url.format({ pathname: event.path, query: event.queryStringParameters })
 }
+function getEventBody (event) {
+  return Buffer.from(event.body, event.isBase64Encoded ? 'base64' : 'utf8')
+}
+
+function clone (json) {
+  return JSON.parse(JSON.stringify(json))
+}
 
 function getContentType (params) {
   // only compare mime type; ignore encoding part
@@ -32,11 +39,18 @@ function isContentTypeBinaryMimeType (params) {
 }
 
 function mapApiGatewayEventToHttpRequest (event, context, socketPath) {
-  const headers = event.headers || {} // NOTE: Mutating event.headers; prefer deep clone of event.headers
-  const eventWithoutBody = Object.assign({}, event)
-  delete eventWithoutBody.body
+  const headers = Object.assign({}, event.headers)
 
-  headers['x-apigateway-event'] = encodeURIComponent(JSON.stringify(eventWithoutBody))
+  // NOTE: API Gateway is not setting Content-Length header on requests even when they have a body
+  if (event.body && !headers['Content-Length']) {
+    const body = getEventBody(event)
+    headers['Content-Length'] = Buffer.byteLength(body)
+  }
+
+  const clonedEventWithoutBody = clone(event)
+  delete clonedEventWithoutBody.body
+
+  headers['x-apigateway-event'] = encodeURIComponent(JSON.stringify(clonedEventWithoutBody))
   headers['x-apigateway-context'] = encodeURIComponent(JSON.stringify(context))
 
   return {
@@ -51,7 +65,7 @@ function mapApiGatewayEventToHttpRequest (event, context, socketPath) {
   }
 }
 
-function forwardResponseToApiGateway (server, response, context) {
+function forwardResponseToApiGateway (server, response, resolver) {
   let buf = []
 
   response
@@ -88,11 +102,11 @@ function forwardResponseToApiGateway (server, response, context) {
       const body = bodyBuffer.toString(isBase64Encoded ? 'base64' : 'utf8')
       const successResponse = {statusCode, body, headers, isBase64Encoded}
 
-      context.succeed(successResponse)
+      resolver.succeed({ response: successResponse })
     })
 }
 
-function forwardConnectionErrorResponseToApiGateway (server, error, context) {
+function forwardConnectionErrorResponseToApiGateway (error, resolver) {
   console.log('ERROR: aws-serverless-express connection error')
   console.error(error)
   const errorResponse = {
@@ -101,10 +115,10 @@ function forwardConnectionErrorResponseToApiGateway (server, error, context) {
     headers: {}
   }
 
-  context.succeed(errorResponse)
+  resolver.succeed({ response: errorResponse })
 }
 
-function forwardLibraryErrorResponseToApiGateway (server, error, context) {
+function forwardLibraryErrorResponseToApiGateway (error, resolver) {
   console.log('ERROR: aws-serverless-express error')
   console.error(error)
   const errorResponse = {
@@ -113,25 +127,23 @@ function forwardLibraryErrorResponseToApiGateway (server, error, context) {
     headers: {}
   }
 
-  context.succeed(errorResponse)
+  resolver.succeed({ response: errorResponse })
 }
 
-function forwardRequestToNodeServer (server, event, context) {
+function forwardRequestToNodeServer (server, event, context, resolver) {
   try {
     const requestOptions = mapApiGatewayEventToHttpRequest(event, context, getSocketPath(server._socketPathSuffix))
-    const req = http.request(requestOptions, (response, body) => forwardResponseToApiGateway(server, response, context))
+    const req = http.request(requestOptions, (response) => forwardResponseToApiGateway(server, response, resolver))
     if (event.body) {
-      if (event.isBase64Encoded) {
-        event.body = Buffer.from(event.body, 'base64')
-      }
+      const body = getEventBody(event)
 
-      req.write(event.body)
+      req.write(body)
     }
 
-    req.on('error', (error) => forwardConnectionErrorResponseToApiGateway(server, error, context))
+    req.on('error', (error) => forwardConnectionErrorResponseToApiGateway(error, resolver))
       .end()
   } catch (error) {
-    forwardLibraryErrorResponseToApiGateway(server, error, context)
+    forwardLibraryErrorResponseToApiGateway(error, resolver)
     return server
   }
 }
@@ -182,13 +194,56 @@ function createServer (requestListener, serverListenCallback, binaryTypes) {
   return server
 }
 
-function proxy (server, event, context) {
-  if (server._isListening) {
-    forwardRequestToNodeServer(server, event, context)
-    return server
-  } else {
-    return startServer(server)
-      .on('listening', () => proxy(server, event, context))
+function proxy (server, event, context, resolutionMode, callback) {
+  // DEPRECATED: Legacy support
+  if (!resolutionMode) {
+    const resolver = makeResolver({ context, resolutionMode: 'CONTEXT_SUCCEED' })
+    if (server._isListening) {
+      forwardRequestToNodeServer(server, event, context, resolver)
+      return server
+    } else {
+      return startServer(server)
+        .on('listening', () => proxy(server, event, context))
+    }
+  }
+
+  return {
+    promise: new Promise((resolve, reject) => {
+      const promise = {
+        resolve,
+        reject
+      }
+      const resolver = makeResolver({
+        context,
+        callback,
+        promise,
+        resolutionMode
+      })
+
+      if (server._isListening) {
+        forwardRequestToNodeServer(server, event, context, resolver)
+      } else {
+        startServer(server)
+          .on('listening', () => forwardRequestToNodeServer(server, event, context, resolver))
+      }
+    })
+  }
+}
+
+function makeResolver (params/* {
+  context,
+  callback,
+  promise,
+  resolutionMode
+} */) {
+  return {
+    succeed: (params2/* {
+      response
+    } */) => {
+      if (params.resolutionMode === 'CONTEXT_SUCCEED') return params.context.succeed(params2.response)
+      if (params.resolutionMode === 'CALLBACK') return params.callback(null, params2.response)
+      if (params.resolutionMode === 'PROMISE') return params.promise.resolve(params2.response)
+    }
   }
 }
 
@@ -205,4 +260,5 @@ if (process.env.NODE_ENV === 'test') {
   exports.forwardRequestToNodeServer = forwardRequestToNodeServer
   exports.startServer = startServer
   exports.getSocketPath = getSocketPath
+  exports.makeResolver = makeResolver
 }
