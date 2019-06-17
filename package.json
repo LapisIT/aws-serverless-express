@@ -58,7 +58,7 @@
       }
     ]
   },
-  "husky": {
+  "_husky": {
     "hooks": {
       "pre-commit": "lint-staged && npm run install-example-dependencies && npm test",
       "commit-msg": "commitlint -e $GIT_PARAMS"
