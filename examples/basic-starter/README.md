@@ -45,6 +45,11 @@ npm start
 npm run package-deploy
 ```
 
+https://github.com/lambci/docker-lambda
+
+docker run --rm -v "$PWD":/var/task lambci/lambda:nodejs10.x lambda.js
+
+
 # build, updload and deploy scripts
 
 Update the prefix in deploy-commons.sh
@@ -52,3 +57,4 @@ Update the prefix in deploy-commons.sh
 ```bash
 export S3_API_KEY_PREFIX='your-projects/api'
 ```
+
