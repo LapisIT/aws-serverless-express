@@ -43,7 +43,9 @@
     "test-one-debug": "ndb mocha --timeout 90000 --watch --require ts-node/register --watch-extensions ts $1",
     "version": "node scripts/api-version",
     "host-ip": "node scripts/host-ip",
-    "chown": "sudo chown -R $USER:$USER lib"
+    "chown": "sudo chown -R $USER:$USER lib",
+    "log-group": "aws logs describe-log-groups --region=ap-southeast-2 | grep YOUR_SERVERLESS_EXPRESS_LAMBDA_FUNCTION_NAME",
+    "watch-log-dev": "export AWS_PROFILE=vfa && awslogs get /aws/lambda/REPLACE_WITH_LOG_GROUP_NAME --start='0m' --watch"
   },
   "license": "Apache-2.0",
   "dependencies": {
