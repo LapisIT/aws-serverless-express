@@ -42,6 +42,6 @@ tar xfz - && DIR=`ls |grep SpatialVision` && cp -R $DIR/src .; mv $DIR/package.j
 * Read the README.md
 
 ```bash
-git archive --remote=git@svgitlab.spatialvision.com.au:aws/aws-serverless-express-336.git \
+git archive --remote=git@svgitlab.spatialvision.com.au:aws/aws-serverless-express.git \
 HEAD:examples/basic-starter | tar xf -
 ```

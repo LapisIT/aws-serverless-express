@@ -45,7 +45,7 @@
     "host-ip": "node scripts/host-ip",
     "chown": "sudo chown -R $USER:$USER lib",
     "log-group": "aws logs describe-log-groups --region=ap-southeast-2 | grep YOUR_SERVERLESS_EXPRESS_LAMBDA_FUNCTION_NAME",
-    "watch-log-dev": "export AWS_PROFILE=vfa && awslogs get /aws/lambda/REPLACE_WITH_LOG_GROUP_NAME --start='0m' --watch"
+    "watch-log-dev": "export awslogs get /aws/lambda/REPLACE_WITH_LOG_GROUP_NAME --start='0m' --watch"
   },
   "license": "Apache-2.0",
   "dependencies": {
@@ -97,7 +97,7 @@
     "chai": "^4.2.0",
     "command-line-args": "^5.1.1",
     "commander": "^2.20.3",
-    "concurrently": "^4.1.2",
+    "concurrently": "^5.2.0",
     "mocha": "^6.2.2",
     "nodemon": "^1.19.4",
     "shelljs": "^0.8.3",
