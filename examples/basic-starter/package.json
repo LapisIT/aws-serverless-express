@@ -73,8 +73,6 @@
     "rambda": "^2.14.5",
     "ramda": "^0.26.1",
     "ramda-debug": "^0.1.4",
-    "request-debug": "^0.2.0",
-    "request-promise": "^4.2.5",
     "traverse": "^0.6.6",
     "uuid": "^3.4.0",
     "winston": "^3.2.1"
@@ -89,7 +87,6 @@
     "@types/mocha": "^5.2.7",
     "@types/moment-timezone": "^0.5.12",
     "@types/node": "^12.12.29",
-    "@types/request-promise": "^4.1.45",
     "@types/shelljs": "^0.8.6",
     "@types/supertest": "^2.0.8",
     "@types/traverse": "^0.6.32",
