@@ -1,9 +1,10 @@
 # Fork
 ```bash
 git clone git@github.com:awslabs/aws-serverless-express.git express
+
 git remote rename origin upstream
 
-git remote add origin git@svgitlab.spatialvision.com.au:aws/aws-serverless-express-320.git
+git remote add origin git@svgitlab.spatialvision.com.au:aws/aws-serverless-express.git
 
 # commit
 
