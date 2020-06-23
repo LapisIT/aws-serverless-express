@@ -1,0 +1,27 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2017",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "src",
+    "baseUrl": "./",
+    "incremental": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "files": [
+    "src/index.d.ts"
+  ],
+  "exclude": [
+    ".vscode",
+    "node_modules"
+  ]
+}
