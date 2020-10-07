@@ -5,7 +5,7 @@ import * as bodyParser from 'body-parser';
 import * as express from 'express';
 dotenv.config();
 import env from './app-env';
-env.init(process.env.TARGET_ENV);
+env.init();
 
 import { createLog } from './logs/logging';
 const log = createLog(__filename);
